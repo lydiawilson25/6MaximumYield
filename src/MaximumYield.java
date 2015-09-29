@@ -1,30 +1,60 @@
-
+/**
+ * A class to find the maximum yield from a given strip 
+ *
+ * @author Lydia
+ */
 
 public class MaximumYield {
 
-    public static void main(String[] args){
-        String str = " 206, 140, 300, 52, 107";
-        inputFormat(str);
-    }
-
-    public static void inputFormat(String s){
-
-        String[] parts = s.replaceAll(" ","").split(",");
-        int[] mines = new int[parts.length];
+	/**
+	 * Method takes a strip string and calculates the maximum yield.
+	 *
+	 * @param strip - A string of mines information
+	 * @return Maximum yield for a given strip returned as integer.
+	 */
+	
+    public int findMaximumYield(String strip) throws ApplicationException{
+    	
+    	//Check if the input strip is empty
+    	if(strip == null || "".equals(strip)) {
+    		return 0;
+    	}
+    	
+    	//Split the strip into parts or squares.
+        String[] parts = strip.replaceAll(" ","").split(",");
         int len = parts.length;
-        for(int i=0;i<parts.length;i++){
-            mines[i]=Integer.parseInt(parts[i]);
+        int[] mines = new int[len];
+        
+        //Convert the squares values into integers
+        for(int i=0;i<len;i++){
+        	if(parts[i] != null && !("".equals(parts[i]))) {
+        		try{	
+        			mines[i]=Integer.parseInt(parts[i]);
+        		}catch (NumberFormatException e) {
+        			throw new ApplicationException("One of the mines has incorrect input");
+        		}
+        	} else {
+        		throw new ApplicationException("One of the mines has no input");
+        	}
         }
-        int maxsum = findOptimal(mines, len);
-        System.out.println(maxsum);
+        //Calculate the optimal or maximum yield
+        return calculateOptimal(mines, len);
     }
 
-    public static int findOptimal(int[] a, int n){
-        int include = a[0], exclude = 0;
-        for (int i = 1; i < n; i++) {
-            int oldinclude = include;
-            include = Math.max(include, exclude + a[i]);
-            exclude = oldinclude;
+	/**
+	 * Method takes the mines list and calculates the optimal yield.
+	 *
+	 * @param minesArr - An integer array of mines from the strip
+	 * @param length - Length of a strip
+	 * @return Maximum yield for a given strip returned as integer.
+	 */
+    
+    public int calculateOptimal(int[] minesArr, int length){
+        int include = minesArr[0], exclude = 0;
+        for (int i = 1; i < length; i++) {
+            int oldInclude = include;
+            include = Math.max(include, exclude + minesArr[i]);
+            exclude = oldInclude;
         }
         return Math.max(include, exclude);
     }
